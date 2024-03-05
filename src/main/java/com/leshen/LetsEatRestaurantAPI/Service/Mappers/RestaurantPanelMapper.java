@@ -18,14 +18,28 @@ import java.util.stream.Collectors;
 public interface RestaurantPanelMapper {
     RestaurantPanelMapper INSTANCE = Mappers.getMapper(RestaurantPanelMapper.class);
     MenuMapper menuMapper = MenuMapper.INSTANCE;
+
     @Mapping(target = "menu", source = "restaurant", qualifiedByName = "mapMenuItems")
-    @Mapping(target = "reviews", ignore = true)
+    @Mapping(target = "stars", source = "restaurant", qualifiedByName = "calculateStars")
     @Mapping(target = "averageService", source = "restaurant", qualifiedByName = "calculateAverageService")
     @Mapping(target = "averageFood", source = "restaurant", qualifiedByName = "calculateAverageFood")
     @Mapping(target = "averageAtmosphere", source = "restaurant", qualifiedByName = "calculateAverageAtmosphere")
     RestaurantPanelDto toDto(Restaurant restaurant);
 
     Restaurant toEntity(RestaurantPanelDto restaurantPanelDto);
+
+    @Named("calculateStars")
+default double calculateStars(Restaurant restaurant) {
+    List<Review> reviews = restaurant.getReviews();
+    if (reviews == null || reviews.isEmpty()) {
+        return 0.0;
+    }
+
+    double sum = reviews.stream().mapToDouble(review -> (review.getService() + review.getFood() + review.getAtmosphere()) / 3.0).sum();
+    double averageStars = sum / reviews.size();
+    return Math.round(averageStars * 10.0) / 10.0;
+}
+
 
     @Named("calculateAverageService")
     default double calculateAverageService(Restaurant restaurant) {
@@ -69,5 +83,4 @@ public interface RestaurantPanelMapper {
 
         return menuItems.stream().map(menuMapper::toDto).collect(Collectors.toList());
     }
-
 }
