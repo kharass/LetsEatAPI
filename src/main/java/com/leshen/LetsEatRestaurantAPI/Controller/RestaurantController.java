@@ -183,4 +183,60 @@ public class RestaurantController {
         }
 
     }
+
+    @GetMapping("/favorite")
+    @Operation(summary = "Get favorite restaurants")
+    @ApiResponse(responseCode = "200", description = "Favorite restaurants found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestaurantDto.class)))
+    @ApiResponse(responseCode = "404", description = "Favorite restaurants not found", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    public ResponseEntity<List<RestaurantDto>> getFavoriteRestaurants() {
+        List<RestaurantDto> favoriteRestaurants = restaurantService.getFavoriteRestaurants();
+        if (favoriteRestaurants.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(favoriteRestaurants, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/{restaurantId}/favorite")
+    public ResponseEntity<?> addToFavorites(@PathVariable Long restaurantId) {
+        if (restaurantService.addToFavorites(restaurantId)) {
+            return ResponseEntity.ok().build(); 
+        } else {
+            return ResponseEntity.notFound().build(); 
+        }
+    }
+
+    @DeleteMapping("/{restaurantId}/favorite")
+    public ResponseEntity<?> removeFromFavorites(@PathVariable Long restaurantId) {
+        if (restaurantService.removeFromFavorites(restaurantId)) {
+            return ResponseEntity.ok().build(); 
+        } else {
+            return ResponseEntity.notFound().build(); 
+        }
+    }
+
+    @GetMapping("/favorite/search")
+    @Operation(summary = "Get favorite restaurants in radius")
+    @ApiResponse(responseCode = "200", description = "Favorite restaurants found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestaurantListDto.class)))
+    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    public ResponseEntity<List<RestaurantListDto>> searchFavoriteRestaurantsInRadius(
+            @Parameter(description="Latitude") @RequestParam double latitude,
+            @Parameter(description="Longitude") @RequestParam double longitude,
+            @Parameter(description="Radius in km") @RequestParam double radius) {
+    
+        System.out.println("Latitude: " + latitude);
+        System.out.println("Longitude: " + longitude);
+        System.out.println("Radius: " + radius);
+    
+        List<RestaurantListDto> favoriteRestaurants = restaurantService.findFavoriteRestaurantsInRadius(latitude, longitude, radius);
+    
+        if (favoriteRestaurants.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    
+        return new ResponseEntity<>(favoriteRestaurants, HttpStatus.OK);
+    }
+    
 }

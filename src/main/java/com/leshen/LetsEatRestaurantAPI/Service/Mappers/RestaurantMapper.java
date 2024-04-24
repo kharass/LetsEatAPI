@@ -24,6 +24,7 @@ public interface RestaurantMapper {
     @Mapping(target = "longitude", source = "restaurantDto.longitude")
     @Mapping(target = "latitude", source = "restaurantDto.latitude")
     @Mapping(target = "phoneNumber", source = "restaurantDto.phoneNumber")
+    @Mapping(target = "isFavorite", source = "restaurantDto.isFavorite")
     Restaurant toEntity(RestaurantDto restaurantDto);
 
     RestaurantDto toDto(Restaurant restaurant);
@@ -40,6 +41,7 @@ public interface RestaurantMapper {
     @Mapping(target = "longitude", source = "restaurantDto.longitude")
     @Mapping(target = "latitude", source = "restaurantDto.latitude")
     @Mapping(target = "phoneNumber", source = "restaurantDto.phoneNumber")
+    @Mapping(target = "isFavorite", source = "restaurantDto.isFavorite")
     Restaurant updateRestaurantFromDto(RestaurantDto restaurantDto, Restaurant restaurant);
 
     @Mapping(target = "restaurantId", source = "restaurantDto.restaurantId")
@@ -53,6 +55,7 @@ public interface RestaurantMapper {
     @Mapping(target = "longitude", source = "restaurantDto.longitude")
     @Mapping(target = "latitude", source = "restaurantDto.latitude")
     @Mapping(target = "phoneNumber", source = "restaurantDto.phoneNumber")
+    @Mapping(target = "isFavorite", source = "restaurantDto.isFavorite")
     Restaurant patchRestaurantFromDto(RestaurantDto restaurantDto, @MappingTarget Restaurant restaurant);
     Restaurant map(Long restaurantId);
 }
