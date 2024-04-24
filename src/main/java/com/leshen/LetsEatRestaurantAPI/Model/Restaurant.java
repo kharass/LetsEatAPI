@@ -29,6 +29,7 @@ public class Restaurant {
     private Double longitude;
     private Double latitude;
     private String phoneNumber;
+    private Boolean isFavorite;
 
     @OneToMany(mappedBy = "restaurant")
     private List<Menu> menu;
@@ -50,6 +51,7 @@ public class Restaurant {
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", isFavorite='" + isFavorite + '\'' +
                 '}';
     }
 }

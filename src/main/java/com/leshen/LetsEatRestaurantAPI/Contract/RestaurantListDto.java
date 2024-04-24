@@ -36,6 +36,9 @@ public class RestaurantListDto {
     @Schema(description = "List of available tables")
     private List<TableDto> tables;
 
+    @Schema(description = "isFavorite", defaultValue = "false", example = "false")
+    private Boolean isFavorite;
+
 
     @Setter
     @Getter

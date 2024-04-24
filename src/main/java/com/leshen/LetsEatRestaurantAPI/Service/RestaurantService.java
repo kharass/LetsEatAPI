@@ -154,4 +154,58 @@ public class RestaurantService {
         }
     }
 
+    public List<RestaurantDto> getFavoriteRestaurants() {
+        List<Restaurant> favoriteRestaurants = restaurantRepository.findByIsFavoriteTrue();
+        return favoriteRestaurants.stream().map(restaurantMapper::toDto).collect(Collectors.toList());
+    }
+
+    public boolean addToFavorites(Long restaurantId) {
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
+        if (optionalRestaurant.isPresent()) {
+            Restaurant restaurant = optionalRestaurant.get();
+            if (!restaurant.getIsFavorite()) {
+                restaurant.setIsFavorite(true);
+                restaurantRepository.save(restaurant);
+                return true; 
+            }
+        }
+        return false; 
+    }
+
+    public boolean removeFromFavorites(Long restaurantId) {
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
+        if (optionalRestaurant.isPresent()) {
+            Restaurant restaurant = optionalRestaurant.get();
+            if (restaurant.getIsFavorite()) {
+                restaurant.setIsFavorite(false);
+                restaurantRepository.save(restaurant);
+                return true; 
+            }
+        }
+        return false; 
+    }
+
+
+    public List<RestaurantListDto> findFavoriteRestaurantsInRadius(double latitude, double longitude, double radius) {
+        List<Restaurant> favoriteRestaurants = restaurantRepository.findFavoriteRestaurantsInRadius(latitude, longitude, radius);
+        List<RestaurantListDto> favoriteRestaurantListDtos = restaurantListMapper.toDtoList(favoriteRestaurants);
+
+        for (int i = 0; i < favoriteRestaurants.size(); i++) {
+            Restaurant restaurant = favoriteRestaurants.get(i);
+
+            
+            double distance = calculateDistance(latitude, longitude, restaurant.getLatitude(), restaurant.getLongitude());
+            String formattedDistance = String.format("%.2f km", distance);
+            favoriteRestaurantListDtos.get(i).setDistance(formattedDistance);
+
+            
+            List<TableDto> tables = tablesRepository.findByRestaurant(restaurant)
+                    .stream()
+                    .map(tablesMapper::toDto)
+                    .collect(Collectors.toList());
+            favoriteRestaurantListDtos.get(i).setTables(tables);
+        }
+
+        return favoriteRestaurantListDtos;
+    }
 }

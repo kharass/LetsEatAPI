@@ -43,4 +43,7 @@ public class RestaurantDto {
 
     @Schema(description = "Phone number", defaultValue = "213791169", example = "213791169")
     private String phoneNumber;
+
+    @Schema(description = "isFavorite", defaultValue = "false", example = "false")
+    private Boolean isFavorite;
 }
