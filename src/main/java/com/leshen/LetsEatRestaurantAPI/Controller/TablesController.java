@@ -2,6 +2,8 @@ package com.leshen.LetsEatRestaurantAPI.Controller;
 
 import com.leshen.LetsEatRestaurantAPI.Service.TableService;
 import com.leshen.LetsEatRestaurantAPI.Contract.TableDto;
+import com.leshen.LetsEatRestaurantAPI.Repository.RestaurantRepository;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -131,4 +133,39 @@ public class TablesController {
             }
         }
     }
+
+    
+    
+    @DeleteMapping("/{restaurantId}/{tableId}")
+    @Operation(summary = "Delete a table from a specific restaurant")
+    @ApiResponse(responseCode = "200", description = "Table deleted", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Long.class)))
+    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized, bad token", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Table not found", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    public ResponseEntity<Long> deleteTableFromSpecificRestaurant(
+            @Parameter(description="Identifier of the restaurant")
+            @PathVariable Long restaurantId,
+            @Parameter(description="Identifier of the table")
+            @PathVariable Long tableId)
+            // @Parameter(description="Authorization token")
+            // @RequestHeader("Authorization") String requestToken) 
+            {
+        try {
+            // if (!tableService.verifyToken(tableId, requestToken)) {
+            //     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            // }
+
+            tableService.deleteTableFromSpecificRestaurant(restaurantId, tableId);
+            return new ResponseEntity<>(tableId, HttpStatus.OK);
+
+        } catch (RuntimeException e) {
+            if (e instanceof NoSuchElementException) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
 }
