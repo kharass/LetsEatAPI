@@ -199,6 +199,12 @@ public class RestaurantController {
     }
 
     @PostMapping("/{restaurantId}/favorite")
+    @Operation(summary = "Add to favorite")
+    @ApiResponse(responseCode = "200", description = "Favorite added", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Long.class)))
+    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized, bad token", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Restaurant not found", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     public ResponseEntity<?> addToFavorites(@PathVariable Long restaurantId) {
         if (restaurantService.addToFavorites(restaurantId)) {
             return ResponseEntity.ok().build(); 
@@ -208,6 +214,12 @@ public class RestaurantController {
     }
 
     @DeleteMapping("/{restaurantId}/favorite")
+    @Operation(summary = "Delete from favorite")
+    @ApiResponse(responseCode = "200", description = "Favorite deleted", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Long.class)))
+    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Unauthorized, bad token", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Restaurant not found", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     public ResponseEntity<?> removeFromFavorites(@PathVariable Long restaurantId) {
         if (restaurantService.removeFromFavorites(restaurantId)) {
             return ResponseEntity.ok().build(); 

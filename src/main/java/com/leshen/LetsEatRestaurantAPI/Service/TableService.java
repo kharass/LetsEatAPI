@@ -3,8 +3,12 @@ package com.leshen.LetsEatRestaurantAPI.Service;
 import com.leshen.LetsEatRestaurantAPI.Contract.TableDto;
 import com.leshen.LetsEatRestaurantAPI.Model.Restaurant;
 import com.leshen.LetsEatRestaurantAPI.Model.Tables;
+import com.leshen.LetsEatRestaurantAPI.Repository.RestaurantRepository;
 import com.leshen.LetsEatRestaurantAPI.Repository.TablesRepository;
 import com.leshen.LetsEatRestaurantAPI.Service.Mappers.TableMapper;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,5 +70,10 @@ public class TableService {
         } catch (NoSuchElementException e) {
             return false;
         }
+    }
+
+
+    public void deleteTableFromSpecificRestaurant(Long restaurantId, Long tableId) {
+        tablesRepository.deleteTableFromSpecificRestaurant(restaurantId, tableId);
     }
 }
