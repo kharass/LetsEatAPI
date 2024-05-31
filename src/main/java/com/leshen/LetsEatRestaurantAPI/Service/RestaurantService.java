@@ -68,12 +68,10 @@ public class RestaurantService {
         for (int i = 0; i < restaurants.size(); i++) {
             Restaurant restaurant = restaurants.get(i);
 
-            // Calculate distance for each restaurant
             double distance = calculateDistance(latitude, longitude, restaurant.getLatitude(), restaurant.getLongitude());
             String formattedDistance = String.format("%.2f km", distance);
             restaurantListDtos.get(i).setDistance(formattedDistance);
 
-            // Fetch and set tables
             List<TableDto> tables = tablesRepository.findByRestaurant(restaurant)
                     .stream()
                     .map(tablesMapper::toDto)
@@ -85,8 +83,8 @@ public class RestaurantService {
     }
 
     private double calculateDistance(double userLatitude, double userLongitude, double restaurantLatitude, double restaurantLongitude) {
-        //Haversine formula
-        double earthRadius = 6371; // Earth radius in kilometers
+        
+        double earthRadius = 6371; 
         double dLat = Math.toRadians(restaurantLatitude - userLatitude);
         double dLon = Math.toRadians(restaurantLongitude - userLongitude);
 
